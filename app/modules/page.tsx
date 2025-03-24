@@ -4,7 +4,17 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 // Module data (consider moving this to a separate file if it grows large)
-const modules = [
+interface Module {
+    id: string;
+    title: string;
+    category: string;
+    labCount: number;
+    description: string;
+    color: string;
+    content: string;
+}
+
+const modules: Module[] = [
     {
         id: 'network-fundamentals',
         title: 'Network Fundamentals',
@@ -94,7 +104,6 @@ const modules = [
         content: `<h1 class="text-3xl font-bold text-cyan-700 mb-4">Routing & Switching Module</h1>
 
 <p class="text-gray-700 mb-4">This module covers the essential concepts of routing and switching that are core to the CCNA certification. You'll learn how to configure and troubleshoot routers and switches in a network environment.</p>
-
 <h2 class="text-2xl font-semibold text-cyan-600 mb-3">Learning Objectives</h2>
 
 <p class="text-gray-700 mb-2">By the end of this module, you will be able to:</p>
@@ -449,7 +458,7 @@ function cn(...classes: (string | { [key: string]: boolean } | undefined | null)
 }
 
 export default function ModulesPage() {
-    const [selectedModule, setSelectedModule] = useState<typeof modules[0] | null>(null);
+    const [selectedModule, setSelectedModule] = useState<Module | null>(null);
 
     useEffect(() => {
         const style = document.createElement('style');
@@ -482,7 +491,7 @@ export default function ModulesPage() {
     };
 
     // Function to handle module selection
-    const handleModuleSelect = (module: typeof modules[0]) => {
+    const handleModuleSelect = (module: Module) => {
         setSelectedModule(module);
     };
 
@@ -569,7 +578,7 @@ export default function ModulesPage() {
                             animate="visible"
                         >
                             {modules.map((module) => {
-                                const cardClasses = `bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 cursor-pointer h-full flex flex-col hover:shadow-lg`;
+                                const cardClasses = `bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 cursder-gray-200 cursor-pointer transition-transform duration-300 hover:scale-105 hover:shadow-lg`;
                                 return (
                                     <motion.div
                                         key={module.id}
@@ -578,24 +587,27 @@ export default function ModulesPage() {
                                         onClick={() => handleModuleSelect(module)}
                                     >
                                         <div className={`h-4 bg-${module.color}-500`}></div>
-                                        <div className="p-6 flex-grow flex flex-col justify-between">
-                                            <div>
-                                                <h3 className="text-xl font-semibold mb-2 text-gray-800">
-                                                    {module.title}
-                                                </h3>
-                                                <p className="text-gray-600 mb-4">
-                                                    {module.description}
-                                                </p>
+                                        <div className="p-6">
+                                            <div className="flex items-center justify-between mb-4">
+                                                <span
+                                                    className={cn(
+                                                        `inline-block text-sm font-semibold px-4 py-2 rounded-full`,
+                                                        `text-${module.color}-600`,
+                                                        `bg-${module.color}-100`,
+                                                    )}
+                                                >
+                                                    {module.category}
+                                                </span>
+                                                <span className="text-md text-gray-500">
+                                                    {module.labCount} Labs
+                                                </span>
                                             </div>
-                                            <span
-                                                className={cn(
-                                                    `inline-block text-sm font-semibold px-3 py-1 rounded-full`,
-                                                    `text-${module.color}-600`,
-                                                    `bg-${module.color}-100`,
-                                                )}
-                                            >
-                                                {module.category}
-                                            </span>
+                                            <h2 className="text-2xl font-bold mb-2 text-gray-800">
+                                                {module.title}
+                                            </h2>
+                                            <p className="text-gray-600">
+                                                {module.description}
+                                            </p>
                                         </div>
                                     </motion.div>
                                 );
